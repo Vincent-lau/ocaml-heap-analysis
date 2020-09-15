@@ -1,1 +1,5 @@
+forward_block.pdf
 .DS_Store
+
+*.csv
+*.gv
