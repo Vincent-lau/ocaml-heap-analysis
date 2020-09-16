@@ -4,14 +4,14 @@ indegree = {}
 with open('heapdump.csv', newline='') as csvfile:
     ptr_reader = csv.reader(csvfile, delimiter=',')
     for row in ptr_reader:
-        indegree[row[0]] = 1
+        indegree[row[0]] = 0
 
 with open('heapdump.csv', newline='') as csvfile:
     ptr_reader = csv.reader(csvfile, delimiter=',')
     for row in ptr_reader:
-        for i in range(len(row)):
+        for i in range(2, len(row)):
             col = row[i]
-            if i != 1 and i != 0 and col in indegree:
+            if col in indegree:
                 indegree[col] += 1
 
 # write the pointers that are not linear and their ref_count
@@ -31,11 +31,20 @@ with open('heapdump.csv', newline='') as inp:
             if indegree[col] > 1:
                 ptr_writer.writerow(row)
 
-# write 
+# write blocks related to ropes
+rope_children = set()
+with open('heapdump.csv', newline='') as inp:
+    ptr_reader = csv.reader(inp)
+    for row in ptr_reader:
+        if row[1] == '250' and len(row) == 6:
+            rope_children.add(row[4])
+            rope_children.add(row[5])
+
 with open('heapdump.csv', newline='') as inp:
     ptr_reader = csv.reader(inp)
     with open('forward_block.csv', 'w', newline='') as out:
         ptr_writer = csv.writer(out)
         for row in ptr_reader:
-            if row[1] == '250' or row[1] == '252':
+            if row[1] == '250' and len(row) == 6 or \
+            row[1] == '252' and row[0] in rope_children:
                 ptr_writer.writerow(row)
