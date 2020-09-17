@@ -14,16 +14,14 @@ with open(file_of_block, newline='') as inp:
     with open(file_of_graph, 'w', newline='') as out:
         out.write("digraph G{\nnode[shape = record];\n")
         for row in reader:
-            out.write('i{a1}[label = "<f0> i{a1} | <tag> {tag} | '.format(
+            out.write('i{a1}[label = "<f0> {a1} | <tag> {tag} | '.format(
                 a1=row[0], tag=row[1]))
-            for i in range(2, len(row)):
+            for i in range(2, len(row) - 1):
                 col = row[i]
-                if i == len(row) - 1:
-                    out.write('<i{a}>"];'.format(a=row[i]))
-                else:
-                    out.write('<i{a}> | '.format(a=row[i]))
-            out.write("\n")
-            for i in range(2, len(row)):
+                out.write('<i{a}> | '.format(a=row[i]))
+            out.write('<minor_collections> {count}"]\n'.format(count = row[-1]))
+            
+            for i in range(2, len(row) - 1):
                 if row[i] in lval: 
                     # only addresses that appear on the lhs can be linked
                     out.write('"i{ptr}":i{child} -> "i{child}":f0\n'.format(

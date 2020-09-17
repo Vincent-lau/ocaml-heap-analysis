@@ -9,7 +9,7 @@ with open('heapdump.csv', newline='') as csvfile:
 with open('heapdump.csv', newline='') as csvfile:
     ptr_reader = csv.reader(csvfile, delimiter=',')
     for row in ptr_reader:
-        for i in range(2, len(row)):
+        for i in range(2, len(row) - 1):
             col = row[i]
             if col in indegree:
                 indegree[col] += 1
@@ -36,7 +36,7 @@ rope_children = set()
 with open('heapdump.csv', newline='') as inp:
     ptr_reader = csv.reader(inp)
     for row in ptr_reader:
-        if row[1] == '250' and len(row) == 6:
+        if row[1] == '250' and len(row) == 7:
             rope_children.add(row[4])
             rope_children.add(row[5])
 
@@ -45,6 +45,6 @@ with open('heapdump.csv', newline='') as inp:
     with open('forward_block.csv', 'w', newline='') as out:
         ptr_writer = csv.writer(out)
         for row in ptr_reader:
-            if row[1] == '250' and len(row) == 6 or \
+            if row[1] == '250' and len(row) == 7 or \
             row[1] == '252' and row[0] in rope_children:
                 ptr_writer.writerow(row)
