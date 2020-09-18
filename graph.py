@@ -1,18 +1,15 @@
 import csv
 
 indegree = {}
-with open('heapdump.csv', newline='') as csvfile:
-    ptr_reader = csv.reader(csvfile, delimiter=',')
+with open('heapdump.csv', newline='') as inp:
+    ptr_reader = csv.reader(inp)
     for row in ptr_reader:
-        indegree[row[0]] = 0
+        col = row[0]
+        if col in indegree:
+            indegree[col] += 1
+        else:
+            indegree[col] = 1
 
-with open('heapdump.csv', newline='') as csvfile:
-    ptr_reader = csv.reader(csvfile, delimiter=',')
-    for row in ptr_reader:
-        for i in range(2, len(row) - 1):
-            col = row[i]
-            if col in indegree:
-                indegree[col] += 1
 
 # write the pointers that are not linear and their ref_count
 with open('ref_count.csv','w', newline='') as inp:
@@ -46,5 +43,6 @@ with open('heapdump.csv', newline='') as inp:
         ptr_writer = csv.writer(out)
         for row in ptr_reader:
             if row[1] == '250' and len(row) == 7 or \
-            row[1] == '252' and row[0] in rope_children:
+            row[1] == '252' and row[0] in rope_children or \
+            len(row) == 9 and row[3] in rope_children:
                 ptr_writer.writerow(row)
